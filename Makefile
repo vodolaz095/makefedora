@@ -52,16 +52,16 @@ console: upgrade
 	systemctl start sshd
 
 gui: console
-	@echo "Installing desctop applications..."
+	@echo "Installing desktop applications..."
 	dnf -y4 install rednotebook swift firefox system-config-users sqliteman libpng12 liferea keepassx seahorse scrot system-config-firewall setroubleshoot
 
 music: console rpmfusion
 	@echo "Installing music related applications..."
 	dnf -y4 install mpd lame ncmpc
 
-video: qui rpmfusion
+video: gui rpmfusion
 	@echo "Installing video related tools..."
-	dnf -y4 install smplayer
+	dnf -y4 install smplayer camorama
 	
 redis: console
 	@echo "Installing redis database..."
@@ -126,6 +126,9 @@ syncthing: console
 	dnf -y copr enable decathorpe/syncthing
 	dnf -y install syncthing
 
+aws: console
+	dnf -y4 install awscli
+
 heroku: console
 	@echo "Installing Heroku toolchain"
 	dnf -y4 install ruby
@@ -154,6 +157,31 @@ steam: rpmfusion gui
 	@echo "Installing steam"
 	dnf -y install steam
 
+flux: gui
+	@echo "Installing flux..."
+	mkdir -p /tmp/xflux
+	curl  https://justgetflux.com/linux/xflux64.tgz >> /tmp/xflux/xflux64.tgz
+	tar -zxvf /tmp/xflux/xflux64.tgz --directory /tmp/xflux/
+	mv /tmp/xflux/xflux /usr/bin/xflux
+	chown root:root /usr/bin/xflux
+	rm -rf /tmp/xflux
+
+flux_enable: isNotRoot
+	@echo "Enable xflux for current user..."
+	@echo "# Enabling xflux" >> $(HOME)/.bash_profile
+
+#todo
+#if [ "$(pidof xflux)" ]
+#then
+# process was found
+#  echo 'xflux is running!'
+#else
+# process not found
+#  xflux -l 55 -g 37
+#fi
+#
+
+
 docker: console
 	@echo "Installing docker"
 	dnf -y install docker
@@ -168,4 +196,9 @@ viber: gui
 	curl http://download.cdn.viber.com/desktop/Linux/viber.rpm >> /tmp/viber.rpm
 	dnf -y install /tmp/viber.rpm
 	rm -f /tmp/viber.rpm
+
+skype: gui
+	curl https://get.skype.com/go/getskype-linux-beta-fc10 >> /tmp/skype.rpm
+	dnf -y install /tmp/skype.rpm
+	rm -f /tmp/skype.rpm
 
