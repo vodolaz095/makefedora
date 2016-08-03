@@ -87,7 +87,7 @@ mariadb: console
 	cat contrib/my.cnf > /etc/my.cnf
 	systemctl start mariadb
 	systemctl enable mariadb
-	mysql_secure_install -u root -p
+	mysql_secure_installation -u root -p
 
 exposeMariadb: mariadb
 	@echo "Making MariaDB database listen on 0.0.0.0:3306"
