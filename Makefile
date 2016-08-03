@@ -50,6 +50,8 @@ console: upgrade
 	dnf -y4 install screen mc sshfs gnupg gnupg2 acpi git dnf-plugins-core make wget curl
 	systemctl enable sshd
 	systemctl start sshd
+	cp contrib/avahi/services/* /etc/avahi/services/
+	chown root:root /etc/avahi/services -Rv
 
 gui: console
 	@echo "Installing desktop applications..."
@@ -201,7 +203,17 @@ skype: gui
 	dnf -y install /tmp/skype.rpm
 	rm -f /tmp/skype.rpm
 
+tox_repo:
+	cp contrib/yum.repos.d/home:antonbatenev:tox.repo /etc/yum.repos.d/home:antonbatenev:tox.repo
+	chown root:root /erc/yum.repos.d/home:antonbatenev:tox.repo -Rv
 
-all: gui docker golang nodejs video music syncthing  redis mongod mariadb xlux
+toxic: tox_repo
+	dnf install -vy4 toxic
+
+utox: tox_repo
+	dnf install -vy4 utox
+
+
+all: gui docker golang nodejs video music syncthing redis mongod mariadb xlux toxic utox
 
 

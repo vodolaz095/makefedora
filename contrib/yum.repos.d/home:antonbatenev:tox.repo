@@ -1,0 +1,7 @@
+[home_antonbatenev_tox]
+name=tox packages (Fedora_23)
+type=rpm-md
+baseurl=http://download.opensuse.org/repositories/home:/antonbatenev:/tox/Fedora_23/
+gpgcheck=1
+gpgkey=http://download.opensuse.org/repositories/home:/antonbatenev:/tox/Fedora_23//repodata/repomd.xml.key
+enabled=1
