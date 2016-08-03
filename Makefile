@@ -62,7 +62,7 @@ music: console rpmfusion
 video: gui rpmfusion
 	@echo "Installing video related tools..."
 	dnf -y4 install smplayer camorama
-	
+
 redis: console
 	@echo "Installing redis database..."
 	dnf -y4 install redis
@@ -80,15 +80,14 @@ mongo: console
 
 exposeMongo: mongo
 	@echo "Making mongo database listen on 0.0.0.0:27017..."
-	
+
 mariadb: console
 	@echo "Installing MariaDB database..."
 	dnf -y4 install mariadb mariadb-server
-	mv /etc/my.cnf /etc/my.cnf.backup
-	mv contrib/my.cnf /etc/my.cnf
-	chown root:root /etc/my.cnf
+	cat contrib/my.cnf > /etc/my.cnf
 	systemctl start mariadb
 	systemctl enable mariadb
+	mysql_secure_install -u root -p
 
 exposeMariadb: mariadb
 	@echo "Making MariaDB database listen on 0.0.0.0:3306"
@@ -201,4 +200,8 @@ skype: gui
 	curl https://get.skype.com/go/getskype-linux-beta-fc10 >> /tmp/skype.rpm
 	dnf -y install /tmp/skype.rpm
 	rm -f /tmp/skype.rpm
+
+
+all: gui docker golang nodejs video music syncthing  redis mongod mariadb xlux
+
 
