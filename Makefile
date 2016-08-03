@@ -31,7 +31,7 @@ endif
 
 clean: isRoot
 	@echo "Remove junky programs i hate..."
-	dnf -y4 remove clipit asunder gnomebaker lxmusic gnumeric osmo pidgin xpad
+	dnf -y4 remove asunder gnomebaker lxmusic gnumeric osmo pidgin xpad
 
 clear: clean
 
@@ -53,7 +53,7 @@ console: upgrade
 
 gui: console
 	@echo "Installing desktop applications..."
-	dnf -y4 install rednotebook swift firefox system-config-users sqliteman libpng12 liferea keepassx seahorse scrot system-config-firewall setroubleshoot
+	dnf -y4 install rednotebook swift firefox system-config-users sqliteman libpng12 liferea keepassx seahorse scrot system-config-firewall setroubleshoot gparted liveusb-creator
 
 music: console rpmfusion
 	@echo "Installing music related applications..."
@@ -83,7 +83,7 @@ exposeMongo: mongo
 	
 mariadb: console
 	@echo "Installing MariaDB database..."
-	dnf -y4 install mariadb
+	dnf -y4 install mariadb mariadb-server
 	mv /etc/my.cnf /etc/my.cnf.backup
 	mv contrib/my.cnf /etc/my.cnf
 	chown root:root /etc/my.cnf
