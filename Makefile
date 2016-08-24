@@ -86,10 +86,13 @@ exposeMongo: mongo
 mariadb: console
 	@echo "Installing MariaDB database..."
 	dnf -y4 install mariadb mariadb-server
-	cat contrib/my.cnf > /etc/my.cnf
+	systemctl start mariadb
+	systemctl stop mariadb
+	cp -f contrib/my.cnf /etc/my.cnf
+	chown root:root /etc/my.cnf
 	systemctl start mariadb
 	systemctl enable mariadb
-	mysql_secure_installation -u root -p
+	#mysql_secure_installation -u root -p
 
 exposeMariadb: mariadb
 	@echo "Making MariaDB database listen on 0.0.0.0:3306"
