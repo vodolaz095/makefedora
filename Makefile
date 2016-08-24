@@ -97,6 +97,13 @@ mariadb: console
 exposeMariadb: mariadb
 	@echo "Making MariaDB database listen on 0.0.0.0:3306"
 
+mysql_workbench: isRoot
+	cp -f contrib/yum.repos.d/mysql-community.repo /etc/yum.repos.d/mysql-community.repo
+	cp -f contrib/yum.repos.d/mysql-community-source.repo /etc/yum.repos.d/mysql-community-source.repo
+	chown root:root /etc/yum.repos.d/mysql-community.repo
+	chown root:root /etc/yum.repos.d/mysql-community-source.repo
+	dnf install -y mysql-workbench-community
+
 golang: console
 	@echo "Installing golang toolchain"
 	dnf -y4 install golang golang-godoc

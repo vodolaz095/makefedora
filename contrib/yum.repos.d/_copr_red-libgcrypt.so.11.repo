@@ -1,0 +1,8 @@
+[red-libgcrypt.so.11]
+name=Copr repo for libgcrypt.so.11 owned by red
+baseurl=https://copr-be.cloud.fedoraproject.org/results/red/libgcrypt.so.11/fedora-$releasever-$basearch/
+skip_if_unavailable=True
+gpgcheck=1
+gpgkey=https://copr-be.cloud.fedoraproject.org/results/red/libgcrypt.so.11/pubkey.gpg
+enabled=1
+enabled_metadata=1
