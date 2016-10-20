@@ -47,7 +47,7 @@ upgrade: isRoot
 
 console: upgrade
 	@echo "Installing console tools..."
-	dnf -y4 install screen mc sshfs gnupg gnupg2 acpi git dnf-plugins-core make wget curl
+	dnf -y4 install screen mc sshfs gnupg gnupg2 acpi git dnf-plugins-core make wget curl telegram-cli elinks lynx
 	systemctl enable sshd
 	systemctl start sshd
 	cp contrib/avahi/services/* /etc/avahi/services/
@@ -234,6 +234,19 @@ nginx: console
 	chcon -Rt httpd_sys_content_t /srv/www/
 	setsebool -P httpd_can_network_connect 1
 
+exposeNginx: nginx
+	@echo "Making nginx listen on 80 and 443 ports"
+	@echo "Enabling firewalld config for home zone..."
+	firewall-cmd --add-service=http --permanent --zone=home
+	firewall-cmd --add-service=https --permanent --zone=home
+	@echo "Enabling firewalld config for work zone..."
+	firewall-cmd --add-service=http --permanent --zone=work
+	firewall-cmd --add-service=https --permanent --zone=work
+	@echo "Enabling firewalld config for public zone..."
+	firewall-cmd --add-service=http --permanent --zone=public
+	firewall-cmd --add-service=https --permanent --zone=public
+
+
 viber: gui
 	curl http://download.cdn.viber.com/desktop/Linux/viber.rpm >> /tmp/viber.rpm
 	dnf -y install /tmp/viber.rpm
@@ -256,5 +269,3 @@ utox: tox_repo
 
 
 all: gui docker golang nodejs video music syncthing redis mongod mariadb flux toxic utox
-
-
