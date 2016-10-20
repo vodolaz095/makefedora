@@ -1,5 +1,5 @@
 export MYUID=$(shell id -u)
-export SUPPORTED_FEDORA_RELEASE=23
+export SUPPORTED_FEDORA_RELEASE=24
 export FEDORA_RELEASE=$(shell rpm -E %fedora)
 
 isFedora:
@@ -52,6 +52,7 @@ console: upgrade
 	systemctl start sshd
 	cp contrib/avahi/services/* /etc/avahi/services/
 	chown root:root /etc/avahi/services -Rv
+	restorecon -Rv /etc/avahi/services
 
 gui: console
 	@echo "Installing desktop applications..."
@@ -73,6 +74,18 @@ redis: console
 
 exposeRedis: redis
 	@echo "Making redis listen on 0.0.0.0:6379"
+	cp contrib/firewalld/services/redis.xml /etc/firewalld/services/redis.xml
+	restorecon -Rv /etc/firewalld/services
+	
+	@echo "Enabling firewalld config for home zone..."
+	firewall-cmd --add-service=redis --permanent --zone=home  
+
+	@echo "Enabling firewalld config for work zone..."
+	firewall-cmd --add-service=redis --permanent --zone=work
+
+	@echo "Enabling firewalld config for public zone..."
+	firewall-cmd --add-service=redis --permanent --zone=public
+
 
 mongo: console
 	@echo "Installing mongo database..."
@@ -82,10 +95,23 @@ mongo: console
 
 exposeMongo: mongo
 	@echo "Making mongo database listen on 0.0.0.0:27017..."
+	cp contrib/firewalld/services/mongod.xml /etc/firewalld/services/mongod.xml
+	restorecon -Rv /etc/firewalld/services
+
+	@echo "Enabling firewalld config for home zone..."
+	firewall-cmd --add-service=mongod --permanent --zone=home  
+
+	@echo "Enabling firewalld config for work zone..."
+	firewall-cmd --add-service=mongod --permanent --zone=work
+
+	@echo "Enabling firewalld config for public zone..."
+	firewall-cmd --add-service=mongod --permanent --zone=public
+
+
 
 mariadb: console
 	@echo "Installing MariaDB database..."
-	dnf -y4 install mariadb mariadb-server
+	dnf -y4 install mariadb mariadb-server mycli
 	systemctl start mariadb
 	systemctl stop mariadb
 	cp -f contrib/my.cnf /etc/my.cnf
@@ -95,25 +121,29 @@ mariadb: console
 	#mysql_secure_installation -u root -p
 
 exposeMariadb: mariadb
-	@echo "Making MariaDB database listen on 0.0.0.0:3306"
+	@echo "Making MariaDB database listen on 0.0.0.0:3306..."
+
+	@echo "Enabling firewalld config for home zone..."
+	firewall-cmd --add-service=mysql --permanent --zone=home  
+
+	@echo "Enabling firewalld config for work zone..."
+	firewall-cmd --add-service=mysql --permanent --zone=work
+
+	@echo "Enabling firewalld config for public zone..."
+	firewall-cmd --add-service=mysql --permanent --zone=public
 
 mysql_workbench: isRoot
-	cp -f contrib/yum.repos.d/mysql-community.repo /etc/yum.repos.d/mysql-community.repo
-	cp -f contrib/yum.repos.d/mysql-community-source.repo /etc/yum.repos.d/mysql-community-source.repo
-	chown root:root /etc/yum.repos.d/mysql-community.repo
-	chown root:root /etc/yum.repos.d/mysql-community-source.repo
+	dnf install -y https://dev.mysql.com/get/mysql57-community-release-fc$(FEDORA_RELEASE)-9.noarch.rpm
 	dnf install -y mysql-workbench-community
 
 golang: console
 	@echo "Installing golang toolchain"
 	dnf -y4 install golang golang-godoc
 
-golangEnv: isNotRoot
-	@echo "Setting Golang environment for current user"
-	@echo "# Setting Golang environment" >> $(HOME)/.bash_profile
-	@echo "export GOROOT=/usr/lib/golang" >> $(HOME)/.bash_profile
-	@echo "export GOPATH=\$$HOME/go" >> $(HOME)/.bash_profile
-	@echo "export PATH=\$$PATH:\$$HOME/go/bin" >> $(HOME)/.bash_profile
+env: isNotRoot
+	@echo "Setting environment for current user"
+	@rm -f $(HOME)/.bash_profile
+	@cat contrib/skel/.bash_profile > $(HOME)/.bash_profile
 	@mkdir $(HOME)/go
 
 nodejs: console
@@ -136,6 +166,18 @@ syncthing: console
 	@echo "Installing Syncthing application"
 	dnf -y copr enable decathorpe/syncthing
 	dnf -y install syncthing
+	cp contrib/firewalld/services/syncthing.xml /etc/firewalld/services/syncthing.xml
+	restorecon -Rv /etc/firewalld/services
+
+	@echo "Enabling firewalld config for home zone..."
+	firewall-cmd --add-service=syncthing --permanent --zone=home
+
+	@echo "Enabling firewalld config for work zone..."
+	firewall-cmd --add-service=syncthing --permanent --zone=work
+
+	@echo "Enabling firewalld config for public zone..."
+	firewall-cmd --add-service=syncthing --permanent --zone=public
+
 
 aws: console
 	dnf -y4 install awscli
@@ -175,23 +217,7 @@ flux: gui
 	tar -zxvf /tmp/xflux/xflux64.tgz --directory /tmp/xflux/
 	mv /tmp/xflux/xflux /usr/bin/xflux
 	chown root:root /usr/bin/xflux
-	rm -rf /tmp/xflux
-
-flux_enable: isNotRoot
-	@echo "Enable xflux for current user..."
-	@echo "# Enabling xflux" >> $(HOME)/.bash_profile
-
-#todo
-#if [ "$(pidof xflux)" ]
-#then
-# process was found
-#  echo 'xflux is running!'
-#else
-# process not found
-#  xflux -l 55 -g 37
-#fi
-#
-
+	rm -rf /tmp/xflux/
 
 docker: console
 	@echo "Installing docker"
@@ -200,8 +226,13 @@ docker: console
 	systemctl enable docker
 
 nginx: console
-	@echo "Installing nginx"
+	@echo "Installing nginx. Web root will be in /srv/www/{domain_name}!"
+	#http://blog.frag-gustav.de/2013/07/21/nginx-selinux-me-mad/
 	dnf -y install nginx
+	mkdir -p /srv/www/
+	chown nginx:root /srv/www/ -Rv
+	chcon -Rt httpd_sys_content_t /srv/www/
+	setsebool -P httpd_can_network_connect 1
 
 viber: gui
 	curl http://download.cdn.viber.com/desktop/Linux/viber.rpm >> /tmp/viber.rpm
@@ -224,6 +255,6 @@ utox: tox_repo
 	dnf install -vy4 utox
 
 
-all: gui docker golang nodejs video music syncthing redis mongod mariadb xlux toxic utox
+all: gui docker golang nodejs video music syncthing redis mongod mariadb flux toxic utox
 
 

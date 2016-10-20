@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service version="0.0.1">
+  <short>Open-source file syncronization system</short>
+  <description>Open tcp 33972 port for incoming connections</description>
+  <port protocol="tcp" port="33972"/>
+</service>

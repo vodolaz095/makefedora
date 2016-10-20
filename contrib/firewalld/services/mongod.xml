@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service version="0.0.1">
+  <short>High-performance, schema-free document-oriented database.</short>
+  <description>Open standart Mongod (TCP 27017) port for incoming connections</description>
+  <port protocol="tcp" port="27017"/>
+</service>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service version="0.0.1">
+  <short>Redis is an  in-memory data structure store, used as database, cache and message broker.</short>
+  <description>Open standart Redis (TCP 6379) port for incoming connections</description>
+  <port protocol="tcp" port="6379"/>
+</service>
