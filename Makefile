@@ -60,7 +60,7 @@ gui: console
 
 music: console rpmfusion
 	@echo "Installing music related applications..."
-	dnf -y4 install mpd lame ncmpc
+	dnf -y4 install mpd lame ncmpc ffmpeg
 
 video: gui rpmfusion
 	@echo "Installing video related tools..."
