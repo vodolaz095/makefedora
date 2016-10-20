@@ -1,6 +1,6 @@
 Make Fedora
 ====================================
-Very opinionated Makefile to help you install all things required on Fedora 23 linux more easily.
+Very opinionated Makefile to help you install all things required on Fedora 24 linux more easily.
 
 
 Usage
@@ -30,14 +30,15 @@ This commands installs packages aimed to be used on headless server with remote 
 - `golang` - install [https://golang.org/](Golang) compiler
 - `golangEnv` `*` - set Golang environment for current user like they say in [https://golang.org/doc/code.html#Workspaces]
 
-- `nginx` - install [http://nginx.org/](nginx) web server (with stack settings), enable and start it          
+- `nginx` - install [http://nginx.org/](nginx) web server (with stack settings), enable and start it. With some showel dancing around selinux.
+- `exposeNginx` - use firewalld to allow nginx listen on 80 and 443
 
 - `redis` - install [http://redis.io/](redis) server (with stack settings), enable and start it 
-- `exposeRedis` - make redis listening on 0.0.0.0:6379 and tune firewalld accordingly. `TODO` - you need to test password on it    
-      
-- `music` - install music related applications - [https://www.musicpd.org/](mpd), mp3 codecs and so on from [http://rpmfusion.org/](RPMFusion) repositories          
+- `exposeRedis` - make redis listening on 0.0.0.0:6379 and tune firewalld accordingly. `TODO` - you need to test password on it
 
-- `mongo`  - install [http://redis.io/](redis) server (with stack settings), enable and start it       
+- `music` - install music related applications - [https://www.musicpd.org/](mpd), mp3 codecs and so on from [http://rpmfusion.org/](RPMFusion) repositories
+
+- `mongo`  - install [https://www.mongodb.com/](mongo) server (with stack settings), enable and start it
 - `exposeMongo` - make mongodb listening on 0.0.0.0:27017 and tune firewalld accordingly. `TODO` - you need to set password for it!
 
 - `syncthing` - install [https://syncthing.net/](Syncthing) open source file synchronization system via [https://copr.fedoraproject.org/coprs/decathorpe/syncthing/](COPR) repo
@@ -59,11 +60,13 @@ This commands aimed to be executed on computer with X server enabled
 - `hipchat` - install [http://hipchat.com/](hipchat) client
 - `foto` - install foto editing tools - [http://yorba.org/shotwell](Shotwell) [https://rawstudio.org/](Rawstudio) and [https://www.gimp.org/](Gimp)           
 - `video` - install [http://smplayer.sourceforge.net/](smplayer) for playing videos alongside with [https://github.com/alessio/camorama](Camorama) to play with webcam
-- `steam` - install [http://store.steampowered.com/](Steam) client to play games          
+- `steam` - install [http://store.steampowered.com/](Steam) client to play games
 - `skype` - install [https://www.skype.com/](Skype) to chat
 - `xflux` - install [https://justgetflux.com/linux.html](xflux) to make your eyes healthier
-- `xflux_enable` `*` - enable the `xflux` for current user account
 
+### Profile commands ###
+
+- `env` - set user environment.
 
 ### Misc commands###
 
