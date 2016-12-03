@@ -149,7 +149,7 @@ env: isNotRoot
 nodejs: console
 	@echo "Install nodejs of actual version and tools required"
 	dnf -y install gcc-c++ krb5-libs krb5-devel
-	dnf -y copr enable nibbler/nodejs
+	dnf -y copr enable khara/nodejs
 	dnf -y install nodejs nodejs-devel npm
 
 tor: console
