@@ -124,7 +124,7 @@ exposeMariadb: mariadb
 	@echo "Making MariaDB database listen on 0.0.0.0:3306..."
 
 	@echo "Enabling firewalld config for home zone..."
-	firewall-cmd --add-service=mysql --permanent --zone=home  
+	firewall-cmd --add-service=mysql --permanent --zone=home
 
 	@echo "Enabling firewalld config for work zone..."
 	firewall-cmd --add-service=mysql --permanent --zone=work
@@ -150,7 +150,9 @@ nodejs: console
 	@echo "Install nodejs of actual version and tools required"
 	dnf -y install gcc-c++ krb5-libs krb5-devel
 	dnf -y copr enable khara/nodejs
-	dnf -y install nodejs nodejs-devel npm
+	dnf -y install nodejs nodejs-devel nodejs-npm
+	node -v
+	npm -v
 
 tor: console
 	@echo "Install and start Tor"
