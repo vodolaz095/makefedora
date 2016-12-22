@@ -56,7 +56,7 @@ console: upgrade
 
 gui: console
 	@echo "Installing desktop applications..."
-	dnf -y4 install rednotebook swift firefox system-config-users sqliteman libpng12 liferea keepassx seahorse scrot system-config-firewall setroubleshoot gparted liveusb-creator
+	dnf -y4 install rednotebook swift firefox system-config-users sqliteman libpng12 liferea keepassx seahorse scrot system-config-firewall setroubleshoot gparted liveusb-creator xclip
 
 music: console rpmfusion
 	@echo "Installing music related applications..."
