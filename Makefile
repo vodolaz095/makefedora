@@ -47,7 +47,7 @@ upgrade: isRoot
 
 console: upgrade
 	@echo "Installing console tools..."
-	dnf -y4 install screen mc sshfs gnupg gnupg2 acpi git dnf-plugins-core make wget curl telegram-cli elinks lynx
+	dnf -y4 install screen mc sshfs gnupg gnupg2 acpi git dnf-plugins-core make wget curl telegram-cli elinks lynx avahi firewalld
 	systemctl enable sshd
 	systemctl start sshd
 	cp contrib/avahi/services/* /etc/avahi/services/
