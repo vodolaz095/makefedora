@@ -230,7 +230,7 @@ docker: console
 nginx: console
 	@echo "Installing nginx. Web root will be in /srv/www/{domain_name}!"
 	#http://blog.frag-gustav.de/2013/07/21/nginx-selinux-me-mad/
-	dnf -y install nginx
+	dnf -y install nginx certbot
 	mkdir -p /srv/www/
 	chown nginx:root /srv/www/ -Rv
 	chcon -Rt httpd_sys_content_t /srv/www/
