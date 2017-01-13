@@ -250,6 +250,7 @@ exposeNginx: nginx
 	@echo "Enabling firewalld config for public zone..."
 	firewall-cmd --add-service=http --permanent --zone=public
 	firewall-cmd --add-service=https --permanent --zone=public
+	firewall-cmd --reload
 
 
 viber: gui
