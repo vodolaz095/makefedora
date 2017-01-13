@@ -193,11 +193,11 @@ heroku: console
 	rm -rf /usr/local/heroku
 	mkdir -p /usr/local/heroku
 	mkdir -p /tmp/heroku/heroku-client
-	curl https://s3.amazonaws.com/assets.heroku.com/heroku-client/heroku-client.tgz >> /tmp/heroku-client.tgz
-	tar -zxvf /tmp/heroku-client.tgz --directory /tmp/heroku/
-	mv /tmp/heroku/heroku-client /usr/local/heroku
-	rm -rf /tmp/heroku
-	rm -f /tmp/heroku-client.tgz
+	curl https://cli-assets.heroku.com/branches/stable/heroku-linux-amd64.tar.gz  >> /tmp/heroku-client.tar.gz
+	tar -zxvf /tmp/heroku-client.tar.gz --directory /tmp/heroku/
+	mv /tmp/heroku/heroku-client /usr/local/heroku/
+	rm -rf /tmp/heroku/
+	rm -f /tmp/heroku-client.tar.gz
 	ln -s /usr/local/heroku/bin/heroku /usr/bin/heroku
 
 hipchat: gui
