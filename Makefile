@@ -56,7 +56,7 @@ console: upgrade
 
 gui: console
 	@echo "Installing desktop applications..."
-	dnf -y4 install rednotebook swift firefox system-config-users sqliteman libpng12 liferea keepassx seahorse scrot system-config-firewall setroubleshoot gparted liveusb-creator xclip
+	dnf -y4 install rednotebook swift firefox system-config-users sqliteman libpng12 liferea keepassx seahorse scrot system-config-firewall setroubleshoot gparted mediawriter xclip
 
 music: console rpmfusion
 	@echo "Installing music related applications..."
@@ -75,6 +75,7 @@ redis: console
 exposeRedis: redis
 	@echo "Making redis listen on 0.0.0.0:6379"
 	cp contrib/firewalld/services/redis.xml /etc/firewalld/services/redis.xml
+	firewall-cmd --reload
 	restorecon -Rv /etc/firewalld/services
 	
 	@echo "Enabling firewalld config for home zone..."
@@ -97,7 +98,7 @@ exposeMongo: mongo
 	@echo "Making mongo database listen on 0.0.0.0:27017..."
 	cp contrib/firewalld/services/mongod.xml /etc/firewalld/services/mongod.xml
 	restorecon -Rv /etc/firewalld/services
-
+	firewall-cmd --reload
 	@echo "Enabling firewalld config for home zone..."
 	firewall-cmd --add-service=mongod --permanent --zone=home  
 
@@ -131,6 +132,8 @@ exposeMariadb: mariadb
 
 	@echo "Enabling firewalld config for public zone..."
 	firewall-cmd --add-service=mysql --permanent --zone=public
+	firewall-cmd --reload
+
 
 mysql_workbench: isRoot
 	dnf install -y https://dev.mysql.com/get/mysql57-community-release-fc$(FEDORA_RELEASE)-9.noarch.rpm
@@ -179,7 +182,7 @@ syncthing: console
 
 	@echo "Enabling firewalld config for public zone..."
 	firewall-cmd --add-service=syncthing --permanent --zone=public
-
+	firewall-cmd --reload
 
 aws: console
 	dnf -y4 install awscli
