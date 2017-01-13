@@ -47,7 +47,7 @@ upgrade: isRoot
 
 console: upgrade
 	@echo "Installing console tools..."
-	dnf -y4 install screen mc sshfs gnupg gnupg2 acpi git dnf-plugins-core make wget curl telegram-cli elinks lynx
+	dnf -y4 install screen mc sshfs gnupg gnupg2 acpi git dnf-plugins-core make wget curl telegram-cli elinks lynx avahi firewalld
 	systemctl enable sshd
 	systemctl start sshd
 	cp contrib/avahi/services/* /etc/avahi/services/
@@ -56,7 +56,7 @@ console: upgrade
 
 gui: console
 	@echo "Installing desktop applications..."
-	dnf -y4 install rednotebook swift firefox system-config-users sqliteman libpng12 liferea keepassx seahorse scrot system-config-firewall setroubleshoot gparted liveusb-creator xsel xclip
+	dnf -y4 install rednotebook swift firefox system-config-users sqliteman libpng12 liferea keepassx seahorse scrot system-config-firewall setroubleshoot gparted mediawriter xsel xclip
 
 music: console rpmfusion
 	@echo "Installing music related applications..."
@@ -76,7 +76,8 @@ exposeRedis: redis
 	@echo "Making redis listen on 0.0.0.0:6379"
 	cp contrib/firewalld/services/redis.xml /etc/firewalld/services/redis.xml
 	restorecon -Rv /etc/firewalld/services
-	
+	firewall-cmd --reload
+		
 	@echo "Enabling firewalld config for home zone..."
 	firewall-cmd --add-service=redis --permanent --zone=home  
 
@@ -85,6 +86,7 @@ exposeRedis: redis
 
 	@echo "Enabling firewalld config for public zone..."
 	firewall-cmd --add-service=redis --permanent --zone=public
+	firewall-cmd --reload
 
 
 mongo: console
@@ -97,6 +99,7 @@ exposeMongo: mongo
 	@echo "Making mongo database listen on 0.0.0.0:27017..."
 	cp contrib/firewalld/services/mongod.xml /etc/firewalld/services/mongod.xml
 	restorecon -Rv /etc/firewalld/services
+	firewall-cmd --reload
 
 	@echo "Enabling firewalld config for home zone..."
 	firewall-cmd --add-service=mongod --permanent --zone=home  
@@ -106,8 +109,7 @@ exposeMongo: mongo
 
 	@echo "Enabling firewalld config for public zone..."
 	firewall-cmd --add-service=mongod --permanent --zone=public
-
-
+	firewall-cmd --reload
 
 mariadb: console
 	@echo "Installing MariaDB database..."
@@ -131,6 +133,8 @@ exposeMariadb: mariadb
 
 	@echo "Enabling firewalld config for public zone..."
 	firewall-cmd --add-service=mysql --permanent --zone=public
+	firewall-cmd --reload
+
 
 mysql_workbench: isRoot
 	dnf install -y https://dev.mysql.com/get/mysql57-community-release-fc$(FEDORA_RELEASE)-9.noarch.rpm
@@ -149,7 +153,6 @@ env: isNotRoot
 nodejs: console
 	@echo "Install nodejs of actual version and tools required"
 	dnf -y install gcc-c++ krb5-libs krb5-devel
-	dnf -y copr enable khara/nodejs
 	dnf -y install nodejs nodejs-devel nodejs-npm
 	node -v
 	npm -v
@@ -170,6 +173,7 @@ syncthing: console
 	dnf -y install syncthing
 	cp contrib/firewalld/services/syncthing.xml /etc/firewalld/services/syncthing.xml
 	restorecon -Rv /etc/firewalld/services
+	firewall-cmd --reload
 
 	@echo "Enabling firewalld config for home zone..."
 	firewall-cmd --add-service=syncthing --permanent --zone=home
@@ -179,14 +183,13 @@ syncthing: console
 
 	@echo "Enabling firewalld config for public zone..."
 	firewall-cmd --add-service=syncthing --permanent --zone=public
-
+	firewall-cmd --reload
 
 aws: console
 	dnf -y4 install awscli
 
 heroku: console
 	@echo "Installing Heroku toolchain"
-	dnf -y4 install ruby
 	rm -rf /usr/local/heroku
 	mkdir -p /usr/local/heroku
 	mkdir -p /tmp/heroku/heroku-client
