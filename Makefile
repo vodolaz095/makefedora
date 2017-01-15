@@ -47,7 +47,7 @@ upgrade: isRoot
 
 console: upgrade
 	@echo "Installing console tools..."
-	dnf -y4 install screen mc sshfs gnupg gnupg2 acpi git dnf-plugins-core make wget curl telegram-cli elinks lynx avahi firewalld
+	dnf -y4 install screen mc sshfs gnupg gnupg2 acpi git dnf-plugins-core make wget curl telegram-cli elinks lynx avahi firewalld wavemon
 	systemctl enable sshd
 	systemctl start sshd
 	cp contrib/avahi/services/* /etc/avahi/services/
@@ -200,6 +200,16 @@ heroku: console
 	rm -f /tmp/heroku-client.tar.gz
 	ln -s /usr/local/heroku/bin/heroku /usr/bin/heroku
 
+micro: console
+	@echo "Installing Micro text editor"
+	wget https://github.com/zyedidia/micro/releases/download/v1.1.3/micro-1.1.3-linux64.tar.gz -O /tmp/micro.tar.gz
+	mkdir -p /tmp/micro/
+	tar -zxvf /tmp/micro.tar.gz --directory /tmp/micro/
+	mv /tmp/micro/micro-1.1.3/micro /usr/bin/micro
+	chown root:root /usr/bin/micro
+	rm -rf /tmp/micro/
+	rm -f /tmp/micro.tar.gz
+
 hipchat: gui
 	@echo "Installing hipchat"
 	rm -f /etc/yum.repos.d/atlassian-hipchat.repo
@@ -268,10 +278,12 @@ tox_repo:
 	chown root:root /erc/yum.repos.d/home:antonbatenev:tox.repo -Rv
 
 toxic: tox_repo
+	@echo "Installing Toxic messenger..."
 	dnf install -vy4 toxic
 
 utox: tox_repo
+	@echo "Installing Utox messenger..."
 	dnf install -vy4 utox
 
 
-all: gui docker golang nodejs video music syncthing redis mongod mariadb flux toxic utox
+all: clean gui docker golang nodejs video music syncthing redis mariadb flux micro
