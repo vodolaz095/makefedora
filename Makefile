@@ -31,7 +31,7 @@ endif
 
 clean: isRoot
 	@echo "Remove junky programs i hate..."
-	dnf -y4 remove asunder gnomebaker lxmusic gnumeric osmo pidgin xpad
+	dnf -y4 remove asunder gnomebaker lxmusic osmo pidgin xpad
 
 clear: clean
 
