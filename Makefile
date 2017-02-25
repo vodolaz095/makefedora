@@ -236,7 +236,7 @@ flux: gui
 
 docker: console
 	@echo "Installing docker"
-	dnf -y install docker
+	dnf -y install docker docker-compose
 	systemctl start docker
 	systemctl enable docker
 
