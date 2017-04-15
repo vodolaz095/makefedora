@@ -60,7 +60,7 @@ gui: console
 
 music: console rpmfusion
 	@echo "Installing music related applications..."
-	dnf -y4 install mpd lame ncmpc ffmpeg
+	dnf -y4 install mpd lame ncmpc ffmpeg puddletag audacity
 
 video: gui rpmfusion
 	@echo "Installing video related tools..."
@@ -148,7 +148,8 @@ env: isNotRoot
 	@echo "Setting environment for current user"
 	@rm -f $(HOME)/.bash_profile
 	@cat contrib/skel/.bash_profile > $(HOME)/.bash_profile
-	@mkdir $(HOME)/go
+	@mkdir -p $(HOME)/go
+	@mkdir -p $(HOME)/bin
 
 nodejs: console
 	@echo "Install nodejs of actual version and tools required"
@@ -202,10 +203,10 @@ heroku: console
 
 micro: console
 	@echo "Installing Micro text editor"
-	wget https://github.com/zyedidia/micro/releases/download/v1.1.3/micro-1.1.3-linux64.tar.gz -O /tmp/micro.tar.gz
+	wget https://github.com/zyedidia/micro/releases/download/v1.1.4/micro-1.1.4-linux64.tar.gz -O /tmp/micro.tar.gz
 	mkdir -p /tmp/micro/
 	tar -zxvf /tmp/micro.tar.gz --directory /tmp/micro/
-	mv /tmp/micro/micro-1.1.3/micro /usr/bin/micro
+	mv /tmp/micro/micro-1.1.4/micro /usr/bin/micro
 	chown root:root /usr/bin/micro
 	rm -rf /tmp/micro/
 	rm -f /tmp/micro.tar.gz
@@ -262,28 +263,14 @@ exposeNginx: nginx
 	firewall-cmd --add-service=https --permanent --zone=public
 	firewall-cmd --reload
 
+telegram: isNotRoot
+	@echo "Installing Telegram messenger..."
+	@mkdir -p /tmp/telegram/output/
+	@mkdir -p $(HOME)/bin
+	wget https://telegram.org/dl/desktop/linux -O /tmp/telegram/telegram.tar.xz
+	@tar xpvf /tmp/telegram/telegram.tar.xz -C /tmp/telegram/output/
+	@cp /tmp/telegram/output/Telegram/Telegram $(HOME)/bin/Telegram
+	@cp /tmp/telegram/output/Telegram/Updater $(HOME)/bin/Updater
+	@rm -rf /tmp/telegram
 
-viber: gui
-	curl http://download.cdn.viber.com/desktop/Linux/viber.rpm >> /tmp/viber.rpm
-	dnf -y install /tmp/viber.rpm
-	rm -f /tmp/viber.rpm
-
-skype: gui
-	curl https://get.skype.com/go/getskype-linux-beta-fc10 >> /tmp/skype.rpm
-	dnf -y install /tmp/skype.rpm
-	rm -f /tmp/skype.rpm
-
-tox_repo:
-	cp contrib/yum.repos.d/home:antonbatenev:tox.repo /etc/yum.repos.d/home:antonbatenev:tox.repo
-	chown root:root /erc/yum.repos.d/home:antonbatenev:tox.repo -Rv
-
-toxic: tox_repo
-	@echo "Installing Toxic messenger..."
-	dnf install -vy4 toxic
-
-utox: tox_repo
-	@echo "Installing Utox messenger..."
-	dnf install -vy4 utox
-
-
-all: clean gui docker golang nodejs video music syncthing redis mariadb flux micro
+all: clean gui docker golang nodejs video music syncthing redis mariadb flux micro telegram
