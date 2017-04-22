@@ -73,3 +73,7 @@ This commands aimed to be executed on computer with X server enabled
 - `upgrade` - upgrade system  
 - `rpmfusion` - enable [http://rpmfusion.org/](RPMFusion) repositories  
 
+### Target commands###
+
+- `server` - install as Anatolij like to set up homeserver - golang, docker, nodejs for development  and nginx  redis, mariadb servers  listening for connections
+- `desctop` - install as Anatolij likes to set desctop/laptop PCs

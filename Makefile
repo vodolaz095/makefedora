@@ -56,11 +56,11 @@ console: upgrade
 
 gui: console
 	@echo "Installing desktop applications..."
-	dnf -y4 install rednotebook swift firefox system-config-users sqliteman libpng12 liferea keepassx seahorse scrot system-config-firewall setroubleshoot gparted mediawriter xsel xclip
+	dnf -y4 install rednotebook swift firefox system-config-users sqliteman libpng12 liferea keepassx seahorse scrot system-config-firewall setroubleshoot gparted mediawriter xsel xclip puddletag audacity
 
 music: console rpmfusion
 	@echo "Installing music related applications..."
-	dnf -y4 install mpd lame ncmpc ffmpeg puddletag audacity
+	dnf -y4 install mpd lame ncmpc ffmpeg
 
 video: gui rpmfusion
 	@echo "Installing video related tools..."
@@ -153,8 +153,7 @@ env: isNotRoot
 
 nodejs: console
 	@echo "Install nodejs of actual version and tools required"
-	dnf -y install gcc-c++ krb5-libs krb5-devel
-	dnf -y install nodejs nodejs-devel nodejs-npm
+	dnf -y install gcc-c++ krb5-libs krb5-devel nodejs nodejs-devel nodejs-npm
 	node -v
 	npm -v
 
@@ -274,3 +273,7 @@ telegram: isNotRoot
 	@rm -rf /tmp/telegram
 
 all: clean gui docker golang nodejs video music syncthing redis mariadb flux micro telegram
+
+desctop: all
+
+server: clean docker golang nodejs syncthing micro exposeNginx exposeMariadb exposeRedis
