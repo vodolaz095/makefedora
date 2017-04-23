@@ -248,6 +248,8 @@ nginx: console
 	chown nginx:root /srv/www/ -Rv
 	chcon -Rt httpd_sys_content_t /srv/www/
 	setsebool -P httpd_can_network_connect 1
+	systemctl start nginx
+	systemctl enable nginx
 
 exposeNginx: nginx
 	@echo "Making nginx listen on 80 and 443 ports"
