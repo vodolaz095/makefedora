@@ -272,6 +272,19 @@ telegram: isNotRoot
 	@cp /tmp/telegram/output/Telegram/Updater $(HOME)/bin/Updater
 	@rm -rf /tmp/telegram
 
+gitolite: isRoot
+	dnf install -y git ssh sshd perl
+	systemctl restart sshd
+	systemclt enable sshd
+	useradd -m git
+	passwd -l git
+	rm -rf /home/git/.ssh/*
+	mkdir -p /home/git/bin
+	cd /home/git && git clone git://github.com/sitaramc/gitolite
+	/home/git/gitolite/install -to /home/git/bin
+	/home/git/bin/gitolite setup -pk /home/vodolaz095/.ssh/id_rsa.pub
+	chown git:git /home/git/ -Rv
+
 all: clean gui docker golang nodejs video music syncthing redis mariadb flux micro telegram
 
 desctop: all
