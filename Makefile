@@ -276,8 +276,8 @@ gitolite: isRoot
 	dnf install -y git openssh perl
 	systemctl restart sshd
 	systemctl enable sshd
-#	useradd -m git
-#	passwd -l git
+	useradd -m git
+	passwd -l git
 	rm -rf /home/git/.ssh/*
 	rm -rf /home/git/gitolite
 	rm -rf /home/git/repositories
@@ -291,4 +291,4 @@ all: clean gui docker golang nodejs video music syncthing redis mariadb flux mic
 
 desctop: all
 
-server: clean docker golang nodejs syncthing micro exposeNginx exposeMariadb exposeRedis
+server: clean docker golang nodejs syncthing micro exposeNginx exposeMariadb exposeRedis gitolite
