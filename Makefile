@@ -1,5 +1,5 @@
 export MYUID=$(shell id -u)
-export SUPPORTED_FEDORA_RELEASE=24
+export SUPPORTED_FEDORA_RELEASE=25
 export FEDORA_RELEASE=$(shell rpm -E %fedora)
 
 isFedora:
@@ -77,9 +77,9 @@ exposeRedis: redis
 	cp contrib/firewalld/services/redis.xml /etc/firewalld/services/redis.xml
 	restorecon -Rv /etc/firewalld/services
 	firewall-cmd --reload
-		
+
 	@echo "Enabling firewalld config for home zone..."
-	firewall-cmd --add-service=redis --permanent --zone=home  
+	firewall-cmd --add-service=redis --permanent --zone=home
 
 	@echo "Enabling firewalld config for work zone..."
 	firewall-cmd --add-service=redis --permanent --zone=work
@@ -102,7 +102,7 @@ exposeMongo: mongo
 	firewall-cmd --reload
 
 	@echo "Enabling firewalld config for home zone..."
-	firewall-cmd --add-service=mongod --permanent --zone=home  
+	firewall-cmd --add-service=mongod --permanent --zone=home
 
 	@echo "Enabling firewalld config for work zone..."
 	firewall-cmd --add-service=mongod --permanent --zone=work
@@ -153,7 +153,7 @@ env: isNotRoot
 
 nodejs: console
 	@echo "Install nodejs of actual version and tools required"
-	dnf -y install gcc-c++ krb5-libs krb5-devel nodejs nodejs-devel nodejs-npm
+	dnf -y install gcc-c++ krb5-libs krb5-devel nodejs nodejs-devel npm
 	node -v
 	npm -v
 
