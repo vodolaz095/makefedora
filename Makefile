@@ -293,8 +293,6 @@ rethinkdb: isRoot console
 	mv contrib/yum.repos.d/rethinkdb.repo /etc/yum.repos.d/rethinkdb.repo
 	restorecon -Rv /etc/yum.repos.d/rethinkdb.repo
 	dnf install -y rethinkdb
-	systemctl start rethinkdb
-	systemctl enable rethinkdb
 	cp contrib/firewalld/services/rethinkdb_cluster.xml /etc/firewalld/services/
 	cp contrib/firewalld/services/rethinkdb_server.xml  /etc/firewalld/services/
 	restorecon -Rv /etc/firewalld/services
