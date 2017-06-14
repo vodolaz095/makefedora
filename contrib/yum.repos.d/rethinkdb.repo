@@ -1,5 +1,5 @@
 [rethinkdb]
 name=RethinkDB
 baseurl=http://download.rethinkdb.com/centos/6/$basearch/
-gpgcheck=1
+gpgcheck=0
 enabled=1
