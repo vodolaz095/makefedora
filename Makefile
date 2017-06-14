@@ -1,5 +1,5 @@
 export MYUID=$(shell id -u)
-export SUPPORTED_FEDORA_RELEASE=24
+export SUPPORTED_FEDORA_RELEASE=25
 export FEDORA_RELEASE=$(shell rpm -E %fedora)
 
 isFedora:
@@ -286,6 +286,61 @@ gitolite: isRoot
 	cp contrib/gitolite-install.sh /home/git/
 	chown git:git /home/git -Rv
 	su -l git -c '/home/git/gitolite-install.sh'
+
+rethinkdb: isRoot console
+	mv contrib/yum.repos.d/rethinkdb.repo /etc/yum.repos.d/rethinkdb.repo
+	restorecon -Rv /etc/yum.repos.d/rethinkdb.repo
+	dnf install -y rethinkdb
+	systemctl start rethinkdb
+	systemctl enable rethinkdb
+	cp contrib/firewalld/services/rethinkdb_cluster.xml /etc/firewalld/services/
+	cp contrib/firewalld/services/rethinkdb_server.xml  /etc/firewalld/services/
+	restorecon -Rv /etc/firewalld/services
+	firewall-cmd --reload
+		
+	
+exposeRethinkDBServer: rethinkdb
+	@echo "Making rethinkdb listen on 28015(server)"
+	cp contrib/firewalld/services/redis.xml /etc/firewalld/services/redis.xml
+	restorecon -Rv /etc/firewalld/services
+	firewall-cmd --reload
+
+
+	@echo "Enabling firewalld config for home zone..."
+	firewall-cmd --add-service=rethinkdb_server --permanent --zone=home
+	firewall-cmd --add-service=rethinkdb_server --permanent --zone=home
+
+	@echo "Enabling firewalld config for work zone..."
+	firewall-cmd --add-service=rethinkdb_server --permanent --zone=work
+	firewall-cmd --add-service=rethinkdb_server --permanent --zone=work
+
+	@echo "Enabling firewalld config for public zone..."
+	firewall-cmd --add-service=rethinkdb_server --permanent --zone=public
+	firewall-cmd --add-service=rethinkdb_server --permanent --zone=public
+	firewall-cmd --reload
+
+exposeRethinkDBServerCluster: exposeRethinkDBServer
+	@echo "Making rethinkdb listen on 28015(server) and 29015(cluster)"
+	@echo "Enabling firewalld config for home zone..."
+	firewall-cmd --add-service=rethinkdb_server --permanent --zone=home
+	firewall-cmd --add-service=rethinkdb_server --permanent --zone=home
+	firewall-cmd --add-service=rethinkdb_cluster --permanent --zone=home
+	firewall-cmd --add-service=rethinkdb_cluster --permanent --zone=home
+
+	@echo "Enabling firewalld config for work zone..."
+	firewall-cmd --add-service=rethinkdb_server --permanent --zone=work
+	firewall-cmd --add-service=rethinkdb_server --permanent --zone=work
+	firewall-cmd --add-service=rethinkdb_cluster --permanent --zone=work
+	firewall-cmd --add-service=rethinkdb_cluster --permanent --zone=work
+
+	@echo "Enabling firewalld config for public zone..."
+	firewall-cmd --add-service=rethinkdb_server --permanent --zone=public
+	firewall-cmd --add-service=rethinkdb_server --permanent --zone=public
+	firewall-cmd --add-service=rethinkdb_cluster --permanent --zone=public
+	firewall-cmd --add-service=rethinkdb_cluster --permanent --zone=public
+
+	firewall-cmd --reload
+
 
 all: clean gui docker golang nodejs video music syncthing redis mariadb flux micro telegram
 

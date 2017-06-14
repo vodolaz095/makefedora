@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service version="0.0.1">
+  <short>RethinkDB cluster is an open source database for realtime web.</short>
+  <description>Open standart RethinkDB cluster (TCP 29015) port for incoming connections</description>
+  <port protocol="tcp" port="29015"/>
+</service>
