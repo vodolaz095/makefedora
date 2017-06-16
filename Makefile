@@ -47,9 +47,10 @@ upgrade: isRoot
 
 console: upgrade
 	@echo "Installing console tools..."
-	dnf -y4 install screen mc sshfs gnupg gnupg2 acpi git dnf-plugins-core make wget curl telegram-cli elinks lynx avahi firewalld wavemon
+	dnf -y4 install screen mc sshfs gnupg gnupg2 acpi git dnf-plugins-core make wget curl telegram-cli elinks lynx avahi firewalld wavemon zip unzip chkrootkit
 	systemctl enable sshd
 	systemctl start sshd
+	systemctl start firewalld
 	cp contrib/avahi/services/* /etc/avahi/services/
 	chown root:root /etc/avahi/services -Rv
 	restorecon -Rv /etc/avahi/services
@@ -297,7 +298,9 @@ rethinkdb: isRoot console
 	cp contrib/firewalld/services/rethinkdb_server.xml  /etc/firewalld/services/
 	restorecon -Rv /etc/firewalld/services
 	firewall-cmd --reload
-		
+	#https://www.rethinkdb.com/docs/start-on-startup/
+	systemctl start rethinkdb
+	systemctl enable rethinkdb
 	
 exposeRethinkDBServer: rethinkdb
 	@echo "Making rethinkdb listen on 28015(server)"
